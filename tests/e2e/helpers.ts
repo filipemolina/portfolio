@@ -58,6 +58,8 @@ export async function ready(page: Page) {
 
 /** Load the app and wait for it to be interactive. */
 export async function boot(page: Page) {
-  await page.goto('/')
+  // './', not '/': the deployed site lives under a base path, and a root-absolute
+  // URL would resolve above it.
+  await page.goto('./')
   await ready(page)
 }

@@ -31,6 +31,9 @@ A Playwright suite covers every command's output, the input interactions, theme 
 npx playwright install chromium   # once
 npm run test:e2e                  # against the dev server
 E2E_TARGET=preview npm run test:e2e   # against the production build (run npm run build first)
+
+# against an already-deployed site — how to verify a Pages deploy
+E2E_BASE_URL=https://filipemolina.github.io/portfolio/ npm run test:e2e
 ```
 
 Screenshot baselines live in `tests/e2e/visual.spec.ts-snapshots/` and **are** committed.

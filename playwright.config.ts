@@ -3,7 +3,9 @@ import { defineConfig, devices } from '@playwright/test'
 // A dedicated port so a stray dev server on the usual one can't be mistaken for
 // the suite's own (see HANDOFF.md).
 const PORT = 3211
-const baseURL = `http://localhost:${PORT}`
+// E2E_BASE_URL points the suite at an already-running site (e.g. the deployed
+// one) instead of starting a local server — useful for verifying a deploy.
+const baseURL = process.env.E2E_BASE_URL ?? `http://localhost:${PORT}`
 
 export default defineConfig({
   testDir: './tests/e2e',
@@ -41,15 +43,18 @@ export default defineConfig({
     },
   ],
 
-  webServer: {
-    // E2E_TARGET=preview runs the same suite against the production build,
-    // which catches anything that only breaks once bundled.
-    command:
-      process.env.E2E_TARGET === 'preview'
-        ? `npm run preview -- --port ${PORT} --strictPort`
-        : `npm run dev -- --port ${PORT} --strictPort`,
-    url: baseURL,
-    reuseExistingServer: !process.env.CI,
-    timeout: 120_000,
-  },
+  // Nothing to start when we've been pointed at an existing site.
+  webServer: process.env.E2E_BASE_URL
+    ? undefined
+    : {
+        // E2E_TARGET=preview runs the same suite against the production build,
+        // which catches anything that only breaks once bundled.
+        command:
+          process.env.E2E_TARGET === 'preview'
+            ? `npm run preview -- --port ${PORT} --strictPort`
+            : `npm run dev -- --port ${PORT} --strictPort`,
+        url: baseURL,
+        reuseExistingServer: !process.env.CI,
+        timeout: 120_000,
+      },
 })

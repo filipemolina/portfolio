@@ -78,7 +78,7 @@ test('the saved theme is applied before the document finishes parsing (no flash)
     })
   })
 
-  await page.goto('/', { waitUntil: 'domcontentloaded' })
+  await page.goto('./', { waitUntil: 'domcontentloaded' })
 
   const readyStateWhenSet = await page.evaluate(
     () => (window as unknown as { __themeSetAt?: string | null }).__themeSetAt,
@@ -96,7 +96,7 @@ test('the saved theme is applied before the document finishes parsing (no flash)
 })
 
 test('the pre-paint theme script is served ahead of styles and app code', async ({ page }) => {
-  const html = await (await page.request.get('/')).text()
+  const html = await (await page.request.get('./')).text()
 
   const scriptAt = html.indexOf("localStorage.getItem('portfolio-theme')")
   expect(scriptAt, 'inline theme script missing from the served HTML').toBeGreaterThan(-1)
