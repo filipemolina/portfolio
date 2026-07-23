@@ -1,0 +1,7 @@
+/* Injected only for screenshot comparisons.
+   The dev server overlays its own devtools widget on the page; it is not part
+   of the site and must not end up in a baseline. */
+#nuxt-devtools-anchor,
+#nuxt-devtools-container {
+  display: none !important;
+}

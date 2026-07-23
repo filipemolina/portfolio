@@ -22,3 +22,7 @@ logs
 .env
 .env.*
 !.env.example
+
+# Playwright (screenshot baselines under tests/e2e/*-snapshots/ ARE committed)
+test-results
+playwright-report
