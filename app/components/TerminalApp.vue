@@ -100,7 +100,7 @@ async function runRaw(raw: string) {
 
   if (cmd.action === 'download') {
     await show({ command: raw, kind: 'info', text: 'opening resume.pdf in a new tab…' })
-    window.open('/files/Resume_2026.pdf', '_blank', 'noopener')
+    window.open(useRuntimeConfig().app.baseURL + 'files/Resume_2026.pdf', '_blank', 'noopener')
     return
   }
 

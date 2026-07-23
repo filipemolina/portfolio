@@ -37,11 +37,19 @@ Without a key set, the form simply doesn't render — the email/LinkedIn/GitHub 
 
 ## Deployment
 
-Built to deploy on [Vercel](https://vercel.com) (free tier) with zero config — connect the repo
-and it auto-detects Nuxt. Remember to set `NUXT_PUBLIC_WEB3FORMS_KEY` in the Vercel project's
-environment variables so the contact form works in production.
+Deployed to GitHub Pages at https://filipemolina.github.io/portfolio/ via
+`.github/workflows/deploy-pages.yml`, which runs on every push to `main`:
+
+1. `npm run generate` (static export) with `NUXT_APP_BASE_URL=/portfolio/` so assets resolve
+   under the project-pages subpath, and `NUXT_PUBLIC_WEB3FORMS_KEY` pulled from the
+   `NUXT_PUBLIC_WEB3FORMS_KEY` repo secret so the contact form works in production.
+2. Uploads `.output/public` as a Pages artifact and deploys it.
+
+`public/.nojekyll` disables Jekyll processing so GitHub Pages serves the `_nuxt/` asset
+directory (Jekyll ignores underscore-prefixed paths by default).
 
 ```bash
-npm run build     # production build
+npm run generate  # static export (what CI runs)
+npm run build     # production build (Node server output)
 npm run preview   # preview production build locally
 ```

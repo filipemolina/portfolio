@@ -19,7 +19,7 @@ export default defineNuxtConfig({
       title: 'Filipe Molina — Senior Software Engineer',
       htmlAttrs: { lang: 'en', class: 'dark' },
       link: [
-        { rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' },
+        { rel: 'icon', type: 'image/svg+xml', href: 'favicon.svg' },
       ],
       meta: [
         {
