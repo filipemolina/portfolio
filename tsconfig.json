@@ -1,18 +1,30 @@
 {
-  // https://nuxt.com/docs/guide/concepts/typescript
-  "files": [],
-  "references": [
-    {
-      "path": "./.nuxt/tsconfig.app.json"
-    },
-    {
-      "path": "./.nuxt/tsconfig.server.json"
-    },
-    {
-      "path": "./.nuxt/tsconfig.shared.json"
-    },
-    {
-      "path": "./.nuxt/tsconfig.node.json"
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "lib": ["ESNext", "DOM", "DOM.Iterable"],
+    // `node` is here for the config files at the repo root (vite/playwright),
+    // which run in Node rather than the browser.
+    "types": ["vite/client", "node"],
+
+    // Nuxt's generated configs were strict; keep it that way or `typecheck`
+    // silently gets weaker than it was before the migration.
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+
+    "isolatedModules": true,
+    "verbatimModuleSyntax": true,
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "noEmit": true,
+
+    // Matches resolve.alias in vite.config.ts.
+    "paths": {
+      "~/*": ["./app/*"]
     }
-  ]
+  },
+  "include": ["app/**/*.ts", "app/**/*.vue", "tests/**/*.ts", "*.config.ts"]
 }

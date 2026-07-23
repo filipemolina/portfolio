@@ -107,9 +107,14 @@ test('the pre-paint theme script is served ahead of styles and app code', async 
   const styleAt = html.search(/<link[^>]+rel=["']stylesheet["']/)
   if (styleAt > -1) expect(scriptAt).toBeLessThan(styleAt)
 
-  const moduleAt = html.search(/<script[^>]+type=["']module["']/)
-  expect(moduleAt, 'no module script found in the served HTML').toBeGreaterThan(-1)
-  expect(scriptAt).toBeLessThan(moduleAt)
+  // The dev server injects its own HMR client module at the very top of <head>.
+  // It renders nothing, so it cannot paint anything — skip it and check the
+  // first script that actually loads the app.
+  const appScript = [...html.matchAll(/<script[^>]+type=["']module["'][^>]*>/g)].find(
+    (m) => !m[0].includes('@vite/'),
+  )
+  expect(appScript, 'no app module script found in the served HTML').toBeDefined()
+  expect(scriptAt).toBeLessThan(appScript!.index)
 })
 
 test('a corrupt stored theme is ignored by the app state', async ({ page }) => {

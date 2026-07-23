@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import { computed } from 'vue'
+import { useTheme } from '~/composables/useTheme'
+
 const { current } = useTheme()
 
 const logo = `  ______ __  __

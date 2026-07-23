@@ -42,10 +42,12 @@ export default defineConfig({
   ],
 
   webServer: {
-    command: `npm run dev -- --port ${PORT}`,
-    // A stray Nuxt dev server on the default port holds a global dev lock that
-    // would refuse this second one. (Nuxt-only; drops out with the migration.)
-    env: { NUXT_IGNORE_LOCK: '1' },
+    // E2E_TARGET=preview runs the same suite against the production build,
+    // which catches anything that only breaks once bundled.
+    command:
+      process.env.E2E_TARGET === 'preview'
+        ? `npm run preview -- --port ${PORT} --strictPort`
+        : `npm run dev -- --port ${PORT} --strictPort`,
     url: baseURL,
     reuseExistingServer: !process.env.CI,
     timeout: 120_000,

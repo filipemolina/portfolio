@@ -28,15 +28,17 @@ jobs:
       # npm ci is intentionally not used here: this lockfile's optional native
       # deps (@emnapi/* pulled in via Vite's wasm fallback chain) resolve
       # differently across npm versions, making strict lock matching flaky.
+      # Dropping Nuxt did not remove that risk — Vite is still a direct dep.
+      # `npm ci` does succeed on the post-migration lockfile locally, so it is
+      # worth retrying here; revert to `npm install` if CI goes red again.
       - run: npm install
 
-      - run: npm run generate
-        env:
-          NUXT_APP_BASE_URL: /portfolio/
+      # The /portfolio/ base path is baked into vite.config.ts.
+      - run: npm run build
 
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: .output/public
+          path: dist
 
   deploy:
     needs: build

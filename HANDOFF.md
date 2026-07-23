@@ -16,11 +16,12 @@ the **v1 scrolling-sections design, which has since been replaced** (see below).
 
 ## Where things live
 
-- Project root: `/home/filipe/IdeaProjects/portfolio` (Nuxt 4, git initialized, branch `main`)
-- Dev server: was already running on **port 3210** (a stray-but-healthy child process from
-  earlier; `kill` on the wrapper PID didn't kill it). Check `ps aux | grep nuxt` before
-  starting a new one — Nuxt will refuse with "Another dev server is already running" if it's
-  still alive. Reuse it if so.
+- Project root: `/home/filipe/IdeaProjects/portfolio` (Vue 3 + Vite, git initialized,
+  branch `main`)
+- Dev server: `npm run dev`, served under `/portfolio/` (the site's `base`). A stray Nuxt
+  dev server from an earlier session may still be alive on **port 3210** — harmless now that
+  Nuxt is gone (no more global dev lock), but check `ps aux | grep -E 'nuxt|vite'` before
+  assuming a port is free. The Playwright suite uses its own port, 3211.
 - Résumé PDF served at `public/files/Resume_2026.pdf` (converted from the docx via
   headless libreoffice).
 
@@ -45,26 +46,34 @@ So the entire site is now **one interactive terminal component**:
   `cd experience`, `whoami`, `ls`), `resolveCommand()`, `suggest()`, `completions()`.
 - `app/composables/useAutoHeightTransition.ts` — FLIP-style smooth height animation for
   the panel (420ms, `cubic-bezier(0.16, 1, 0.3, 1)`, respects `prefers-reduced-motion`).
-- `app/components/{Home,About,Experience,Skills,Projects,Contact,Help}View.vue` — content
-  views rendered inside the log. `ContactView.vue` contains the Web3Forms form logic
-  (key read from `runtimeConfig.public.web3formsKey`, form hidden if key unset).
+- `app/components/{About,Experience,Skills,Projects,Contact,Help}View.vue` — content views
+  rendered inside the log. `ContactView.vue` is now plain links; the Web3Forms contact form
+  was removed.
 - `app/components/TerminalWindow.vue` — chrome (traffic lights, title bar, focus glow).
+- `app/main.ts` — Vite entry: mounts `app.vue` on `#app` and imports the two stylesheets.
 - `app/app.vue` — centers TerminalApp + `FooterSection.vue` on the page.
+- `index.html` — Vite's entry document. Holds the title/meta/OG tags and the inline
+  pre-paint theme script. **That script must stay ahead of the stylesheet and the app
+  bundle** or the saved theme flashes on load; a test asserts this.
 - Old `*Section.vue` components and `SectionHeading.vue` were **deleted**; their content
   was ported into the View components.
 
-Styling: Tailwind (`@nuxtjs/tailwindcss`), custom `term-*` color tokens in
-`tailwind.config.ts`, small helpers in `app/assets/css/main.css`.
+Styling: Tailwind v3 through the classic PostCSS pipeline (`postcss.config.js`), custom
+`term-*` color tokens in `tailwind.config.ts`, small helpers in `app/assets/css/main.css`.
+`tailwind.config.ts`'s `content` array is load-bearing — empty it and v3 emits no utilities
+at all, leaving the site unstyled.
+
+There are no auto-imports. Vue APIs, composables, and components are all imported
+explicitly; that is deliberate, not an oversight to "fix" with `unplugin-auto-import`.
 
 ## Verification state
 
-- Typecheck: **clean** (`npm run typecheck`, i.e. `nuxi typecheck`).
-- Playwright-driven interaction tests (typing, tab-complete, unknown command, pill click,
-  `clear`) passed at 1440x900 and 390x844 via `playwright-core` against
-  `/usr/bin/google-chrome` (scripts/screenshots were in the session scratchpad, now gone —
-  re-create if needed; no Chrome extension is connected, use playwright-core).
-- Production build: **needs re-running** — it passed once, but *before* the final
-  type-safety edits to `commands.ts` and `TerminalApp.vue`. Run `npm run build` to confirm.
+- Typecheck: **clean** (`npm run typecheck`, i.e. `vue-tsc --noEmit`).
+- Playwright suite: **118/118 green** at 1440x900 and 390x844, against both the dev server
+  and the production build. It is committed now (`tests/e2e/`, `npm run test:e2e`) — the
+  earlier ad-hoc scratchpad scripts are gone and no longer needed. See README for how to run
+  it and how to treat the screenshot baselines.
+- Production build: **clean** (`npm run build` → `dist/`, assets under `/portfolio/`).
 
 ## Bugs already found and fixed (don't re-break these)
 
@@ -76,34 +85,27 @@ Styling: Tailwind (`@nuxtjs/tailwindcss`), custom `term-*` color tokens in
    `scrollHeight`, then restore. Keep that measurement dance intact.
 3. **vue-tsc / typescript**: `typescript@^7` breaks `vue-tsc@3.3.8`
    (`ERR_PACKAGE_PATH_NOT_EXPORTED`). Pinned `typescript@^5.9.3` — don't upgrade blindly.
-4. **Headless screenshot quirks**: full-page captures ghost-duplicate fixed elements (the
-   Nuxt DevTools button — dev-only, harmless), and artificially tall viewports break
-   `vh`-based sizing. Test with real ~900px viewports + `scrollIntoViewIfNeeded()`.
-
-## Immediate next steps (in order)
-
-1. `npm run build` in the project root; fix anything it surfaces.
-2. **Report to the user.** They have NOT yet seen or approved the v2 terminal redesign —
-   their last message was the redesign request itself. Tell them: the site is now a single
-   interactive terminal; how to use it (type `help`, `about`, `experience`, …, or click the
-   pills); that resize is smoothly animated; that it fixes their bleed-through/scrolling
-   complaints; and that it's running locally (port 3210) for them to try. Then iterate on
-   their feedback.
+4. **Headless screenshot quirks**: artificially tall viewports break `vh`-based sizing —
+   test at real viewport heights (~900px). The suite's screenshot comparisons inject
+   `tests/e2e/screenshot.css` to hide dev-only overlays.
+5. **Playwright + hydration/mount races**: the prompt exists in the markup before the app
+   has mounted, and keystrokes sent in that window are dropped. `tests/e2e/helpers.ts`'
+   `ready()` waits for the prompt to be *focused* (which only happens in `onMounted`).
+   Don't replace that with a bare visibility check.
 
 ## Outstanding decisions / tasks (blocked on the user)
 
-- **Web3Forms access key** — needed for the contact form to render in production. Setup
-  documented in `README.md` / `.env.example` (`NUXT_PUBLIC_WEB3FORMS_KEY`).
-- **Deployment** — plan says GitHub repo + Vercel free tier (`*.vercel.app` subdomain,
-  custom domain deferred). Not started; wait for the user's go-ahead.
 - **Stack Stitcher screenshot** — `ProjectsView.vue` currently shows an illustrative TUI
   mockup; a real screenshot/GIF of the app would be better. (A recent separate session
   worked on stack-stitcher itself at `/home/filipe/Documents/projects/tui` and mentioned
   recordings — a real capture may now be easy to get.)
 - **Phone number** — deliberately omitted from the site (flagged in the plan as a
   recommendation, user never overrode). Confirm before ever adding it.
-- After user approval: end-to-end contact form test on the deployed site, Lighthouse pass,
-  view on a real phone (all in the plan's Verification section).
+- Lighthouse pass and a look on a real phone (from the original plan's Verification
+  section) — still not done.
+- Optional follow-up cleanups, deliberately kept out of the Vite migration: bumping Tailwind
+  v3 → v4 (which would swap PostCSS for `@tailwindcss/vite`), and dropping the vestigial
+  `class="dark"` / `darkMode: 'class'` pair — no `dark:` variants are used anywhere.
 
 ## Working style notes for this user
 

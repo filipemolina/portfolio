@@ -1,7 +1,7 @@
 /*
  * Easter-egg styling only — safe to delete along with:
  *   app/data/eastereggs.ts, app/composables/useEasterEggs.ts,
- *   app/components/NeofetchView.vue (and its nuxt.config css entry).
+ *   app/components/NeofetchView.vue (and this file's import in app/main.ts).
  *
  * Everything here is keyed on data-attributes that useEasterEggs.ts sets on
  * <html> (data-broken, data-off, data-flicker, data-os), plus inert
