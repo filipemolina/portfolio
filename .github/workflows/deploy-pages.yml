@@ -33,7 +33,6 @@ jobs:
       - run: npm run generate
         env:
           NUXT_APP_BASE_URL: /portfolio/
-          NUXT_PUBLIC_WEB3FORMS_KEY: ${{ secrets.NUXT_PUBLIC_WEB3FORMS_KEY }}
 
       - uses: actions/upload-pages-artifact@v3
         with:

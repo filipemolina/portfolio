@@ -6,14 +6,6 @@ export default defineNuxtConfig({
   modules: ['@nuxtjs/tailwindcss'],
   css: ['~/assets/css/main.css', '~/assets/css/eastereggs.css'],
 
-  runtimeConfig: {
-    public: {
-      // Get a free access key at https://web3forms.com (tied to the destination
-      // email, no signup/approval wait) and set it as NUXT_PUBLIC_WEB3FORMS_KEY.
-      web3formsKey: '',
-    },
-  },
-
   app: {
     head: {
       title: 'Filipe Molina — Senior Software Engineer',
