@@ -25,7 +25,10 @@ jobs:
           node-version: 22
           cache: npm
 
-      - run: npm ci
+      # npm ci is intentionally not used here: this lockfile's optional native
+      # deps (@emnapi/* pulled in via Vite's wasm fallback chain) resolve
+      # differently across npm versions, making strict lock matching flaky.
+      - run: npm install
 
       - run: npm run generate
         env:
