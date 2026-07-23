@@ -1,4 +1,4 @@
-import type { Ref } from 'vue'
+import { computed, onUnmounted, ref, type Ref } from 'vue'
 import { resolveEgg, type EggResult } from '~/data/eastereggs'
 import type { Screen } from '~/types/terminal'
 

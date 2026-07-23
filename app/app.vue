@@ -1,19 +1,12 @@
 <script setup lang="ts">
-// Apply a persisted theme before first paint to avoid a flash of the default.
-useHead({
-  script: [
-    {
-      innerHTML:
-        `try{var t=localStorage.getItem('portfolio-theme');` +
-        `if(t&&t!=='default')document.documentElement.dataset.theme=t}catch(e){}`,
-    },
-  ],
-})
+import FooterSection from '~/components/FooterSection.vue'
+import TerminalApp from '~/components/TerminalApp.vue'
+// The pre-paint theme script lives in index.html — it has to run before the
+// bundle loads, so it cannot be injected from here.
 </script>
 
 <template>
   <div>
-    <NuxtRouteAnnouncer />
     <div class="flex min-h-screen flex-col items-center justify-center px-4 py-10 sm:px-6">
       <div class="w-full max-w-3xl">
         <TerminalApp />

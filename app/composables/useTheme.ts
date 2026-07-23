@@ -1,9 +1,13 @@
+import { ref } from 'vue'
 import { themes, type ThemeName } from '~/data/commands'
 
 const STORAGE_KEY = 'portfolio-theme'
 
+// Module-level so every caller shares one value. This is a client-only SPA, so
+// there is no per-request state to isolate.
+const current = ref<ThemeName>('default')
+
 export function useTheme() {
-  const current = useState<ThemeName>('theme', () => 'default')
 
   function apply(name: ThemeName) {
     current.value = name

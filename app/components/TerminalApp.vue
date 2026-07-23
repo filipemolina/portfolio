@@ -1,4 +1,16 @@
 <script setup lang="ts">
+import { computed, nextTick, onMounted, ref, watch } from 'vue'
+import AboutView from '~/components/AboutView.vue'
+import ContactView from '~/components/ContactView.vue'
+import ExperienceView from '~/components/ExperienceView.vue'
+import HelpView from '~/components/HelpView.vue'
+import NeofetchView from '~/components/NeofetchView.vue'
+import ProjectsView from '~/components/ProjectsView.vue'
+import SkillsView from '~/components/SkillsView.vue'
+import TerminalWindow from '~/components/TerminalWindow.vue'
+import { useAutoHeightTransition } from '~/composables/useAutoHeightTransition'
+import { useEasterEggs } from '~/composables/useEasterEggs'
+import { useTheme } from '~/composables/useTheme'
 import { commands, themes, resolveCommand, suggest, completions, commonPrefix, directoryListing, type ThemeName } from '~/data/commands'
 import type { Screen, ScreenKind } from '~/types/terminal'
 
@@ -100,7 +112,7 @@ async function runRaw(raw: string) {
 
   if (cmd.action === 'download') {
     await show({ command: raw, kind: 'info', text: 'opening resume.pdf in a new tab…' })
-    window.open(useRuntimeConfig().app.baseURL + 'files/Resume_2026.pdf', '_blank', 'noopener')
+    window.open(import.meta.env.BASE_URL + 'files/Resume_2026.pdf', '_blank', 'noopener')
     return
   }
 

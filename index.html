@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!--
+      Apply a persisted theme before first paint to avoid a flash of the default.
+      Must stay ahead of the stylesheet and the app bundle below.
+    -->
+    <script>try{var t=localStorage.getItem('portfolio-theme');if(t&&t!=='default')document.documentElement.dataset.theme=t}catch(e){}</script>
+
+    <title>Filipe Molina — Senior Software Engineer</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <meta
+      name="description"
+      content="Filipe Molina — Senior Software Engineer (Frontend / Full-Stack). 10+ years building React, TypeScript &amp; GraphQL applications. Available for freelance contracts and full-time roles."
+    />
+    <meta property="og:title" content="Filipe Molina — Senior Software Engineer" />
+    <meta
+      property="og:description"
+      content="Senior Software Engineer, Frontend / Full-Stack. 10+ years across SaaS, edtech, and high-traffic consumer platforms. Available for freelance contracts and full-time roles."
+    />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="theme-color" content="#0a0e12" />
+  </head>
+  <body>
+    <div id="app"></div>
+    <script type="module" src="/app/main.ts"></script>
+  </body>
+</html>

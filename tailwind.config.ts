@@ -1,6 +1,10 @@
 import type { Config } from 'tailwindcss'
 
 export default <Partial<Config>>{
+  // Required under the plain PostCSS pipeline. @nuxtjs/tailwindcss used to
+  // inject these paths at build time; without them v3 emits zero utilities and
+  // the site renders unstyled.
+  content: ['./index.html', './app/**/*.{vue,ts}'],
   darkMode: 'class',
   theme: {
     extend: {

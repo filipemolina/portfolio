@@ -1,4 +1,4 @@
-import type { Ref } from 'vue'
+import { nextTick, type Ref } from 'vue'
 
 /**
  * Animates an element's height between its current rendered size and its
