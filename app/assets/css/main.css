@@ -1,0 +1,113 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  /* Theme palette as RGB channels (consumed by tailwind.config.ts as
+     `rgb(var(--term-*) / <alpha-value>)`). To add a theme, override these
+     under a selector like `:root[data-theme="light"] { … }` and set the
+     attribute on <html>. */
+  :root {
+    --term-bg: 10 14 18;
+    --term-panel: 16 21 27;
+    --term-border: 35 43 51;
+    --term-fg: 214 221 227;
+    --term-muted: 124 135 145;
+    --term-accent: 52 211 153;
+    --term-accent-2: 56 189 248;
+    --term-warn: 251 191 36;
+    --term-danger: 248 113 113;
+  }
+
+  /* Catppuccin Mocha, blue-forward (accent: blue, secondary: lavender) */
+  :root[data-theme='catppuccin'] {
+    --term-bg: 24 24 37;
+    --term-panel: 30 30 46;
+    --term-border: 69 71 90;
+    --term-fg: 205 214 244;
+    --term-muted: 127 132 156;
+    --term-accent: 137 180 250;
+    --term-accent-2: 180 190 254;
+    --term-warn: 249 226 175;
+    --term-danger: 243 139 168;
+  }
+
+  /* Amber phosphor CRT — monochrome warm tones */
+  :root[data-theme='amber'] {
+    --term-bg: 10 7 2;
+    --term-panel: 18 13 5;
+    --term-border: 61 45 16;
+    --term-fg: 255 204 128;
+    --term-muted: 158 118 60;
+    --term-accent: 255 176 0;
+    --term-accent-2: 255 207 64;
+    --term-warn: 255 176 0;
+    --term-danger: 255 111 60;
+  }
+
+  :root[data-theme='light'] {
+    --term-bg: 237 240 243;
+    --term-panel: 250 251 252;
+    --term-border: 209 217 225;
+    --term-fg: 33 45 55;
+    --term-muted: 100 116 139;
+    --term-accent: 5 150 105;
+    --term-accent-2: 2 132 199;
+    --term-warn: 180 83 9;
+    --term-danger: 220 38 38;
+  }
+
+  html {
+    @apply scroll-smooth;
+  }
+
+  body {
+    @apply bg-term-bg text-term-fg font-mono antialiased;
+  }
+
+  ::selection {
+    @apply bg-term-accent/30 text-term-fg;
+  }
+}
+
+@layer utilities {
+  .text-glow {
+    text-shadow: 0 0 20px rgb(var(--term-accent) / 35%);
+  }
+}
+
+@keyframes caret-blink {
+  0%,
+  49% {
+    opacity: 1;
+  }
+  50%,
+  100% {
+    opacity: 0;
+  }
+}
+
+.caret {
+  animation: caret-blink 1s step-end infinite;
+}
+
+/* Block cursor for the terminal prompt (native caret is hidden on the input):
+   a literal U+2588 FULL BLOCK, so the font sets its size and baseline.
+   Semi-transparent so the character underneath stays readable. */
+.cursor-block {
+  color: rgb(var(--term-accent) / 65%);
+}
+
+.cursor-block--blink {
+  animation: caret-blink 1.1s step-end infinite;
+}
+
+.cursor-block--idle {
+  color: rgb(var(--term-accent) / 25%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cursor-block--blink {
+    animation: none;
+  }
+}

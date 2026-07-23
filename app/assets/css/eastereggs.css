@@ -1,0 +1,173 @@
+/*
+ * Easter-egg styling only — safe to delete along with:
+ *   app/data/eastereggs.ts, app/composables/useEasterEggs.ts,
+ *   app/components/NeofetchView.vue (and its nuxt.config css entry).
+ *
+ * Everything here is keyed on data-attributes that useEasterEggs.ts sets on
+ * <html> (data-broken, data-off, data-flicker, data-os), plus inert
+ * `.terminal-fall` hook classes in TerminalApp.vue / FooterSection.vue.
+ * Without this file those hooks style nothing.
+ */
+
+/* ---- rm -rf /: panel glitch + elements falling off ---- */
+
+.terminal-fall {
+  transition:
+    transform 0.9s cubic-bezier(0.55, 0, 1, 0.45) var(--fall-delay, 0s),
+    opacity 0.9s ease-in var(--fall-delay, 0s);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  :root[data-broken] .terminal-fall {
+    opacity: 0;
+    transform: translateY(60px) rotate(2.5deg);
+  }
+
+  :root[data-broken] [data-terminal-panel] {
+    animation: glitch-jitter 0.28s steps(2) infinite;
+    filter: saturate(1.5) contrast(1.2) hue-rotate(-12deg);
+  }
+}
+
+@keyframes glitch-jitter {
+  0% {
+    transform: translate(0, 0) skewX(0);
+  }
+  25% {
+    transform: translate(-3px, 2px) skewX(-1.2deg);
+  }
+  50% {
+    transform: translate(2px, -2px) skewX(0.8deg);
+  }
+  75% {
+    transform: translate(-1px, 1px) skewX(-0.4deg);
+  }
+}
+
+/* ---- exit: fake shutdown (cut to black, flicker back) ---- */
+
+[data-terminal-panel] {
+  /* keep border-color here — this shorthand overrides Tailwind's transition-colors */
+  transition:
+    filter 0.12s ease-out,
+    border-color 0.15s;
+}
+
+:root[data-off] [data-terminal-panel] {
+  filter: brightness(0);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  :root[data-flicker] [data-terminal-panel] {
+    animation: crt-flicker 0.4s steps(4);
+  }
+}
+
+@keyframes crt-flicker {
+  0% {
+    opacity: 0;
+  }
+  30% {
+    opacity: 1;
+  }
+  45% {
+    opacity: 0.3;
+  }
+  60% {
+    opacity: 1;
+  }
+  80% {
+    opacity: 0.55;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+/* ---- ssh xp@retro: Luna chrome + Bliss-style wallpaper ---- */
+
+:root[data-os='xp'] body {
+  /* Bliss-style rolling hill, drawn inline (not the Microsoft photo) */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 120' preserveAspectRatio='xMidYMid slice'%3E%3Cdefs%3E%3ClinearGradient id='s' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='0' stop-color='%233a7bd5'/%3E%3Cstop offset='.65' stop-color='%23a8d8f8'/%3E%3C/linearGradient%3E%3ClinearGradient id='h' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='0' stop-color='%2386c443'/%3E%3Cstop offset='1' stop-color='%23477a1e'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='200' height='120' fill='url(%23s)'/%3E%3Cellipse cx='50' cy='28' rx='18' ry='7' fill='white' opacity='.9'/%3E%3Cellipse cx='64' cy='33' rx='14' ry='5' fill='white' opacity='.8'/%3E%3Cellipse cx='142' cy='20' rx='16' ry='6' fill='white' opacity='.85'/%3E%3Cpath d='M0 88 Q 60 58 110 82 T 200 76 V120 H0 Z' fill='url(%23h)'/%3E%3C/svg%3E");
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+}
+
+:root[data-os='xp'] [data-terminal-panel] {
+  border-radius: 0;
+  border-color: #0831d9;
+  box-shadow: 0 8px 30px rgb(0 20 80 / 45%);
+}
+
+:root[data-os='xp'] [data-titlebar] {
+  background: linear-gradient(180deg, #2f80e7 0%, #1557d1 8%, #1d64e3 42%, #1557d1 88%, #0f47ad 100%);
+  border-bottom: none;
+}
+
+:root[data-os='xp'] [data-titlebar] [data-light] {
+  display: none;
+}
+
+:root[data-os='xp'] [data-titlebar] [data-title] {
+  margin-left: 0;
+  color: white;
+  font-weight: 700;
+}
+
+:root[data-os='xp'] [data-titlebar]::after {
+  content: '✕';
+  margin-left: auto;
+  display: grid;
+  place-items: center;
+  width: 1.15rem;
+  height: 1.15rem;
+  border: 1px solid white;
+  border-radius: 3px;
+  background: linear-gradient(180deg, #f1959b, #d6242f);
+  color: white;
+  font-size: 0.7rem;
+}
+
+/* Text outside the terminal must stay readable on both wallpapers,
+   regardless of the active theme. */
+:root[data-os='xp'] footer,
+:root[data-os='xp'] footer span,
+:root[data-os='mac'] footer,
+:root[data-os='mac'] footer span {
+  color: #ffffff;
+  text-shadow: 0 1px 3px rgb(0 0 0 / 55%);
+}
+
+/* ---- ssh mac@retro: Aqua chrome + aurora wallpaper ---- */
+
+:root[data-os='mac'] body {
+  background-image: linear-gradient(160deg, #1e3c72 0%, #2a5298 45%, #6ea8dc 100%);
+}
+
+:root[data-os='mac'] [data-terminal-panel] {
+  border-color: #b9c0c8;
+  box-shadow: 0 14px 40px rgb(0 10 40 / 50%);
+}
+
+:root[data-os='mac'] [data-titlebar] {
+  background: repeating-linear-gradient(180deg, #f4f4f4 0px, #e8e8e8 2px, #f4f4f4 4px);
+  border-bottom: 1px solid #b9c0c8;
+}
+
+:root[data-os='mac'] [data-titlebar] [data-title] {
+  color: #3b3b3b;
+  font-weight: 600;
+}
+
+:root[data-os='mac'] [data-titlebar] [data-light]:nth-of-type(1) {
+  background: #ff5f57;
+}
+
+:root[data-os='mac'] [data-titlebar] [data-light]:nth-of-type(2) {
+  background: #febc2e;
+}
+
+:root[data-os='mac'] [data-titlebar] [data-light]:nth-of-type(3) {
+  background: #28c840;
+}
