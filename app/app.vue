@@ -7,11 +7,11 @@ import TerminalApp from '~/components/TerminalApp.vue'
 
 <template>
   <div>
-    <div class="flex min-h-screen flex-col items-center justify-center px-4 py-10 sm:px-6">
-      <div class="w-full max-w-3xl">
+    <main class="w-full">
+      <div class="mx-auto flex min-h-screen max-w-3xl flex-col items-center justify-center px-4 py-10 sm:px-6">
         <TerminalApp />
+        <FooterSection />
       </div>
-      <FooterSection />
-    </div>
+    </main>
   </div>
 </template>

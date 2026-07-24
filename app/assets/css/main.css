@@ -1,12 +1,21 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+@theme {
+  --color-term-bg: rgb(var(--term-bg));
+  --color-term-panel: rgb(var(--term-panel));
+  --color-term-border: rgb(var(--term-border));
+  --color-term-fg: rgb(var(--term-fg));
+  --color-term-muted: rgb(var(--term-muted));
+  --color-term-accent: rgb(var(--term-accent));
+  --color-term-accent-2: rgb(var(--term-accent-2));
+  --color-term-warn: rgb(var(--term-warn));
+  --color-term-danger: rgb(var(--term-danger));
+}
 
 @layer base {
-  /* Theme palette as RGB channels (consumed by tailwind.config.ts as
-     `rgb(var(--term-*) / <alpha-value>)`). To add a theme, override these
-     under a selector like `:root[data-theme="light"] { … }` and set the
-     attribute on <html>. */
+  /* Theme palette as RGB channels (consumed by @theme as
+     `rgb(var(--term-*))`). To add a theme, override these under a selector like
+     `:root[data-theme="light"] { … }` and set the attribute on <html>. */
   :root {
     --term-bg: 10 14 18;
     --term-panel: 16 21 27;
@@ -70,10 +79,8 @@
   }
 }
 
-@layer utilities {
-  .text-glow {
-    text-shadow: 0 0 20px rgb(var(--term-accent) / 35%);
-  }
+@utility text-glow {
+  text-shadow: 0 0 20px rgb(var(--term-accent) / 35%);
 }
 
 @keyframes caret-blink {
